@@ -46,4 +46,12 @@ CREATE OR REPLACE PACKAGE pkg_hr_employee_mgnt AS
 
     -- Adjust salary if it is less than 3000 (set to 3000)
     PROCEDURE adjust_min_salary (p_min_salary employees_copy.salary%TYPE);
+    
+    -- Get count employees in depth
+    FUNCTION get_count_emp_by_dept(p_dept_id NUMBER)RETURN NUMBER;
+    
+    -- Get Top salary per dept 
+    PROCEDURE get_top_sal_from_dept;
+    
+    
 END pkg_hr_employee_mgnt;
