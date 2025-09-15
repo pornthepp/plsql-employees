@@ -254,5 +254,32 @@ create or replace PACKAGE BODY pkg_hr_employee_mgnt AS
         END IF;
     END adjust_min_salary;
     
+    -- Get count employees in depth
+    FUNCTION get_count_emp_by_dept(p_dept_id NUMBER) RETURN NUMBER IS
+        v_countName NUMBER;
+    BEGIN
+        SELECT COUNT(FIRST_NAME)INTO v_countName FROM EMPLOYEES_COPY WHERE DEPARTMENT_ID = p_dept_id;
+        RETURN v_countName;
+    END get_count_emp_by_dept;
+    
+    -- Get Top salary per dept 
+    PROCEDURE get_top_sal_from_dept IS
+        CURSOR cur_topsal IS
+            SELECT e.DEPARTMENT_ID,e.EMPLOYEE_ID,e.SALARY FROM EMPLOYEES_COPY e
+            WHERE e.SALARY = (SELECT MAX(SALARY)FROM EMPLOYEES_COPY WHERE DEPARTMENT_ID= e.DEPARTMENT_ID);
+            
+        v_dept_id EMPLOYEES_COPY.DEPARTMENT_ID%TYPE;
+        v_emp_id EMPLOYEES_COPY.EMPLOYEE_ID%TYPE;
+        v_sal  EMPLOYEES_COPY.SALARY%TYPE;
+    BEGIN
+        OPEN cur_topsal;
+        LOOP 
+            FETCH cur_topsal INTO v_dept_id,v_emp_id,v_sal;
+            EXIT WHEN cur_topsal%NOTFOUND;
+            DBMS_OUTPUT.PUT_LINE('Employee Highest Salary in Department');
+            DBMS_OUTPUT.PUT_LINE('department id: '||v_dept_id||' employee id: '||v_emp_id||'salary: '||v_sal);
+        END LOOP;
+        CLOSE cur_topsal;
+    END get_top_sal_from_dept;
     
 END pkg_hr_employee_mgnt;
